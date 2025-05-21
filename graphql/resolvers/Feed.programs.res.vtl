@@ -16,7 +16,7 @@
     #end
   ],
   "pageInfo": {
-    "hasNextPage": $util.boolean($last != null),
-    "endCursor": #if($last) "$util.base64Encode($items[-1].sk)" #else null #end
+    "hasNextPage": "$util.boolean($last)",
+    "endCursor": "$util.base64Encode($items[-1].sk)"
   }
 }

@@ -1,8 +1,13 @@
+#set($requested = $ctx.args.feedIds)
+#set($hasFilter = $util.isList($requested) && $requested.size() > 0)
 [
   #foreach($item in $ctx.result.items)
-    {
-      "id": "$util.escapeJavaScript($item.sk).replace('FEED#','').replace('#META','')",
-      "name": "$item.name"
-    }#if($foreach.hasNext),#end
+    #set($id = $item.sk.replace("FEEDMETA#", ""))
+    #if(!$hasFilter || $requested.contains($id))
+      {
+        "id": "$id",
+        "name": "$item.name"
+      }#if($foreach.hasNext),#end
+    #end
   #end
 ]
