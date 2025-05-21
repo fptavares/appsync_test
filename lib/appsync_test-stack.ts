@@ -60,6 +60,7 @@ export class AppsyncTestStack extends Stack {
     const gatewayApiKey = gateway.addApiKey('ProgramsGatewayKey', {
       apiKeyName: 'ProgramsGatewayKey'
     });
+    
     usagePlan.addApiKey(gatewayApiKey);
     usagePlan.addApiStage({
       stage: gateway.deploymentStage,
@@ -67,6 +68,7 @@ export class AppsyncTestStack extends Stack {
     });
 
     new CfnOutput(this, 'GatewayURL', { value: gateway.url });
+    new CfnOutput(this, 'GatewayApiKeyValue', { value: gatewayApiKey.keyId });
 
     const dataSource = api.addDynamoDbDataSource('TableDataSource', table);
     const resolversPath = path.join(__dirname, '../graphql/resolvers');
