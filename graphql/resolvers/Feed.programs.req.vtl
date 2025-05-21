@@ -1,0 +1,30 @@
+#set($clientId = $ctx.identity.request.headers.get("x-client-id"))
+#set($feedId = $ctx.source.id)
+#set($limit = $util.defaultIfNull($ctx.args.first, 10))
+#set($exclusiveStartKey = {})
+
+#if($ctx.args.after)
+  #set($decoded = $util.base64Decode($ctx.args.after))
+  #set($exclusiveStartKey = {
+    "pk": { "S": "CLIENT#$clientId" },
+    "sk": { "S": $util.toJson($decoded) }
+  })
+#end
+
+{
+  "version": "2018-05-29",
+  "operation": "Query",
+  "query": {
+    "expression": "pk = :pk AND begins_with(sk, :programPrefix)",
+    "expressionValues": {
+      ":pk": { "S": "CLIENT#$clientId" },
+      ":programPrefix": { "S": "FEED#$feedId#PROGRAM#" }
+    }
+  },
+  "limit": $limit,
+  #if($ctx.args.after)
+    "exclusiveStartKey": $util.toJson($exclusiveStartKey),
+  #end
+  "scanIndexForward": true,
+  "consistentRead": false
+}

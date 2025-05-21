@@ -1,0 +1,32 @@
+type Query {
+  feeds(feedIds: [ID!]): [Feed!]!
+  programsForFeed(feedId: ID!, first: Int, after: String): ProgramConnection!
+}
+
+type Feed {
+  id: ID!
+  name: String
+  programs(first: Int, after: String): ProgramConnection
+}
+
+type ProgramConnection {
+  edges: [ProgramEdge!]!
+  pageInfo: PageInfo!
+}
+
+type ProgramEdge {
+  node: Program!
+  cursor: String!
+}
+
+type Program {
+  id: ID!
+  name: String
+  genre: String
+  link: String
+}
+
+type PageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+}

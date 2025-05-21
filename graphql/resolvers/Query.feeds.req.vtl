@@ -1,0 +1,13 @@
+#set($clientId = $ctx.identity.request.headers.get("x-client-id"))
+
+{
+  "version": "2018-05-29",
+  "operation": "Query",
+  "query": {
+    "expression": "pk = :pk AND ends_with(sk, :metaSuffix)",
+    "expressionValues": {
+      ":pk": { "S": "CLIENT#$clientId" },
+      ":metaSuffix": { "S": "#META" }
+    }
+  }
+}

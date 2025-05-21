@@ -1,0 +1,8 @@
+[
+  #foreach($item in $ctx.result.items)
+    {
+      "id": "$util.escapeJavaScript($item.sk).replace('FEED#','').replace('#META','')",
+      "name": "$item.name"
+    }#if($foreach.hasNext),#end
+  #end
+]
