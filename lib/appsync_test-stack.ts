@@ -10,6 +10,7 @@ export class AppsyncTestStack extends Stack {
     super(scope, id, props);
 
     const table = new dynamodb.Table(this, 'ClientFeedProgramTable', {
+      tableName: 'ClientFeedProgramTable',
       partitionKey: { name: 'pk', type: dynamodb.AttributeType.STRING },
       sortKey: { name: 'sk', type: dynamodb.AttributeType.STRING },
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
@@ -56,7 +57,9 @@ export class AppsyncTestStack extends Stack {
       },
     });
 
-    const gatewayApiKey = gateway.addApiKey('ProgramsGatewayKey');
+    const gatewayApiKey = gateway.addApiKey('ProgramsGatewayKey', {
+      apiKeyName: 'ProgramsGatewayKey'
+    });
     usagePlan.addApiKey(gatewayApiKey);
     usagePlan.addApiStage({
       stage: gateway.deploymentStage,
