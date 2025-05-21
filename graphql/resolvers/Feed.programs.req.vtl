@@ -1,14 +1,6 @@
 #set($clientId = $ctx.request.headers.get("x-client-id"))
-#set($feedId = $ctx.source.id)
+#set($feedId = $util.defaultIfNull($ctx.source.id, $ctx.args.feedId))
 #set($limit = $util.defaultIfNull($ctx.args.first, 10))
-
-#if($ctx.args.after)
-  #set($decoded = $util.base64Decode($ctx.args.after))
-  #set($exclusiveStartKey = {
-    "pk": { "S": "CLIENT#$clientId" },
-    "sk": { "S": "$util.escapeJavaScript($decoded)" }
-  })
-#end
 
 {
   "version": "2018-05-29",
@@ -21,7 +13,9 @@
     }
   },
   "limit": $limit,
+  #if($ctx.args.after)
+    "nextToken": "$ctx.args.after",
+  #end
   "scanIndexForward": true,
   "consistentRead": false
-  #if($ctx.args.after), "exclusiveStartKey": $util.toJson($exclusiveStartKey) #end
 }

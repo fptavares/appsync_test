@@ -6,17 +6,13 @@ type Query {
 type Feed {
   id: ID!
   name: String
-  programs(first: Int, after: String): ProgramConnection
+  programs(first: Int, after: String): ProgramConnection!
 }
 
 type ProgramConnection {
-  edges: [ProgramEdge!]!
-  pageInfo: PageInfo!
-}
-
-type ProgramEdge {
-  node: Program!
-  cursor: String!
+  programs: [Program!]!
+  cursor: String
+  hasNextPage: Boolean!
 }
 
 type Program {
@@ -24,9 +20,4 @@ type Program {
   name: String
   genre: String
   link: String
-}
-
-type PageInfo {
-  endCursor: String
-  hasNextPage: Boolean!
 }

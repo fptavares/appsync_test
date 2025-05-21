@@ -1,22 +1,9 @@
 #set($items = $ctx.result.items)
-#set($last = $ctx.result.nextToken)
+#set($cursor = $ctx.result.nextToken)
+#set($hasNextPage = !$util.isNull($last))
 
 {
-  "edges": [
-    #foreach($item in $items)
-      {
-        "cursor": "$util.base64Encode($item.sk)",
-        "node": {
-          "id": "$item.programId",
-          "name": "$item.name",
-          "genre": "$item.genre",
-          "link": "$item.link"
-        }
-      }#if($foreach.hasNext),#end
-    #end
-  ],
-  "pageInfo": {
-    "hasNextPage": "$util.boolean($last)",
-    "endCursor": "$util.base64Encode($items[-1].sk)"
-  }
+  "programs": $util.toJson($items),
+  "cursor": $util.toJson($cursor),
+  "hasNextPage": $util.toJson($hasNextPage)
 }

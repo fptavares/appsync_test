@@ -41,9 +41,34 @@ export class AppsyncTestStack extends Stack {
     });
 
     const proxy = gateway.root.addResource('graphql');
-    proxy.addMethod('POST', new apigateway.HttpIntegration(api.graphqlUrl), {
+    proxy.addMethod('POST', new apigateway.HttpIntegration(api.graphqlUrl, {
+      httpMethod: 'POST',
+      options: {
+        integrationResponses: [{
+          statusCode: '200',
+        }],
+        passthroughBehavior: apigateway.PassthroughBehavior.WHEN_NO_MATCH,
+        requestTemplates: {
+          'application/json': `
+            {
+              "version": "2018-05-29",
+              "method": "POST",
+              "resourcePath": "/",
+              "params": {
+                "headers": {
+                  "Content-Type": "application/json"
+                }
+              },
+              "body": $input.body
+            }
+          `,
+        }
+      }
+    }), {
+      methodResponses: [{ statusCode: '200' }],
       apiKeyRequired: true,
     });
+
 
     const usagePlan = gateway.addUsagePlan('DefaultUsagePlan', {
       name: 'DefaultUsagePlan',
@@ -83,6 +108,13 @@ export class AppsyncTestStack extends Stack {
     dataSource.createResolver('FeedProgramsResolver', {
       typeName: 'Feed',
       fieldName: 'programs',
+      requestMappingTemplate: appsync.MappingTemplate.fromFile(`${resolversPath}/Feed.programs.req.vtl`),
+      responseMappingTemplate: appsync.MappingTemplate.fromFile(`${resolversPath}/Feed.programs.res.vtl`),
+    });
+
+    dataSource.createResolver('QueryProgramsForFeedResolver', {
+      typeName: 'Query',
+      fieldName: 'programsForFeed',
       requestMappingTemplate: appsync.MappingTemplate.fromFile(`${resolversPath}/Feed.programs.req.vtl`),
       responseMappingTemplate: appsync.MappingTemplate.fromFile(`${resolversPath}/Feed.programs.res.vtl`),
     });
