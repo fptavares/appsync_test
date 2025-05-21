@@ -48,21 +48,10 @@ export class AppsyncTestStack extends Stack {
           statusCode: '200',
         }],
         passthroughBehavior: apigateway.PassthroughBehavior.WHEN_NO_MATCH,
-        requestTemplates: {
-          'application/json': `
-            {
-              "version": "2018-05-29",
-              "method": "POST",
-              "resourcePath": "/",
-              "params": {
-                "headers": {
-                  "Content-Type": "application/json"
-                }
-              },
-              "body": $input.body
-            }
-          `,
-        }
+        requestParameters: {
+          'integration.request.header.Content-Type': "'application/json'",
+          'integration.request.header.x-api-key': `'${api.apiKey}'`
+        },
       }
     }), {
       methodResponses: [{ statusCode: '200' }],
