@@ -1,0 +1,29 @@
+{
+  "version": "2018-05-29",
+  "method": "GET",
+  "resourcePath": "/eng/web/discovery-service/v3/search/contents",
+  "params": {
+    "headers":{
+      "Content-Type": "application/json",
+    },
+    "query": {
+      "profileId": "anonymous",
+      "sharedProfile": "true",
+      "includeDetails": "true",
+      "replayOptedInTime": "0",
+      "cityId": "65535",
+      "clientType": "209",
+      "contentSourceId": "1",
+      "searchTerm": "$ctx.args.searchString",
+      "queryLanguage": "$util.defaultIfNull($ctx.args.language, "en")",
+      "startResults": "0",
+      "maxResults": "$util.defaultIfNull($ctx.args.limit, 10)",
+      "includeNotEntitled": "true",
+      "filterTimeWindowStart": "1747296000",
+      "filterTimeWindowEnd": "1748509200",
+      "maxRes": "4K",
+      "mergingOn": "true",
+      "goPlayableOnly": "false"
+    }
+  }
+}

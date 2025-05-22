@@ -1,6 +1,7 @@
 type Query {
   feeds(feedIds: [ID!]): [Feed!]!
   programsForFeed(feedId: ID!, first: Int, after: String): ProgramConnection!
+  searchPrograms(searchString: String!, limit: Int, language: String): [Program!]!
 }
 
 type Feed {
@@ -18,7 +19,9 @@ type ProgramConnection {
 type Program {
   id: ID!
   name: LocalizedString
+  description: LocalizedString
   genre: String
+  picture: String
   link: String
 }
 

@@ -4,6 +4,7 @@ import * as appsync from 'aws-cdk-lib/aws-appsync';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as path from 'path';
+import * as logs from 'aws-cdk-lib/aws-logs';
 
 export class AppsyncTestStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -16,18 +17,22 @@ export class AppsyncTestStack extends Stack {
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
     });
 
+    const logGroup = new logs.LogGroup(this, 'AppSyncLogGroup');
+
     const api = new appsync.GraphqlApi(this, 'ProgramsApi', {
       name: 'ProgramsApi',
       definition: appsync.Definition.fromFile(path.join(__dirname, '../graphql/schema.graphql')),
       authorizationConfig: {
         defaultAuthorization: {
           authorizationType: appsync.AuthorizationType.API_KEY,
-          /*apiKeyConfig: {
-            expires: Duration.days(365),
-          },*/
         },
       },
       xrayEnabled: true,
+      logConfig: {
+        fieldLogLevel: appsync.FieldLogLevel.ALL,
+        excludeVerboseContent: false,
+        retention: logs.RetentionDays.ONE_WEEK,
+      },
     });
 
     const apiKey = api.apiKey!;
@@ -106,6 +111,18 @@ export class AppsyncTestStack extends Stack {
       fieldName: 'programsForFeed',
       requestMappingTemplate: appsync.MappingTemplate.fromFile(`${resolversPath}/Feed.programs.req.vtl`),
       responseMappingTemplate: appsync.MappingTemplate.fromFile(`${resolversPath}/Feed.programs.res.vtl`),
+    });
+
+    const httpDs = api.addHttpDataSource('SearchService', 'https://spark-prod-nl.gnp.cloud.ziggogo.tv', {
+      name: 'SearchService',
+      description: 'Search Discovery Service',
+    });
+
+    httpDs.createResolver('QuerySearchProgramsResolver', {
+      typeName: 'Query',
+      fieldName: 'searchPrograms',
+      requestMappingTemplate: appsync.MappingTemplate.fromFile(`${resolversPath}/Query.searchPrograms.req.vtl`),
+      responseMappingTemplate: appsync.MappingTemplate.fromFile(`${resolversPath}/Query.searchPrograms.res.vtl`),
     });
   }
 }
