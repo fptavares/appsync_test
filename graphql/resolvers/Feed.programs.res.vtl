@@ -1,9 +1,6 @@
-#set($items = $ctx.result.items)
-#set($cursor = $ctx.result.nextToken)
-#set($hasNextPage = !$util.isNull($last))
-
-{
-  "programs": $util.toJson($items),
-  "cursor": $util.toJson($cursor),
-  "hasNextPage": $util.toJson($hasNextPage)
-}
+#set($response = {
+  "programs": $ctx.result.items,
+  "cursor": $ctx.result.nextToken,
+  "hasNextPage": !$util.isNull($ctx.result.nextToken)
+})
+$util.toJson($response)

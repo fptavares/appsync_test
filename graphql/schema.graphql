@@ -5,7 +5,7 @@ type Query {
 
 type Feed {
   id: ID!
-  name: String
+  name: LocalizedString
   programs(first: Int, after: String): ProgramConnection!
 }
 
@@ -17,7 +17,13 @@ type ProgramConnection {
 
 type Program {
   id: ID!
-  name: String
+  name: LocalizedString
   genre: String
   link: String
+}
+
+type LocalizedString {
+  en: String
+  nl: String
+  fr: String
 }

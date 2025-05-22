@@ -1,6 +1,6 @@
 #set($clientId = $ctx.request.headers.get("x-client-id"))
 #set($feedId = $util.defaultIfNull($ctx.source.id, $ctx.args.feedId))
-#set($limit = $util.defaultIfNull($ctx.args.first, 10))
+#set($limit = $util.math.min($util.defaultIfNull($ctx.args.first, 10), 50))
 
 {
   "version": "2018-05-29",
