@@ -1,3 +1,6 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 import { Stack, StackProps, Duration, CfnOutput } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as appsync from 'aws-cdk-lib/aws-appsync';
@@ -113,7 +116,7 @@ export class AppsyncTestStack extends Stack {
       responseMappingTemplate: appsync.MappingTemplate.fromFile(`${resolversPath}/Feed.programs.res.vtl`),
     });
 
-    const httpDs = api.addHttpDataSource('SearchService', 'https://spark-prod-nl.gnp.cloud.ziggogo.tv', {
+    const httpDs = api.addHttpDataSource('SearchService', process.env.SEARCH_SERVICE_URL!, {
       name: 'SearchService',
       description: 'Search Discovery Service',
     });
